@@ -8,34 +8,22 @@ datasource db {
 }
 
 model Appointment {
-  id                                          BigInt                                        @id @default(autoincrement())
-  date                                        DateTime                                      @db.Date
-  time                                        DateTime                                      @db.Time(6)
-  completed                                   Boolean
-  confirmation_status                         String                                        @db.VarChar(20)
-  doctor_id                                   BigInt
-  patient_id                                  BigInt
-  description                                 String                                        @db.VarChar(200)
-  duration_in_minutes                         Int
-  price                                       Int
-  patient_patient                             Patient                               @relation(fields: [patient_id], references: [id], onUpdate: Restrict, map: "appointment_appointm_patient_id_893eaa7b_fk_patient_p")
-  doctors_doctor                              Doctor                                @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "appointment_appointment_doctor_id_5325109f_fk_doctors_doctor_id")
-  appointment_procedure_appointment_procedure appointment_procedure_appointment_procedure[]
+  id                  BigInt   @id @default(autoincrement())
+  date                DateTime @db.Date
+  time                DateTime @db.Time(6)
+  completed           Boolean
+  confirmation_status String   @db.VarChar(20)
+  doctor_id           BigInt
+  patient_id          BigInt
+  description         String   @db.VarChar(200)
+  duration_in_minutes Int
+  price               Int
+  patient_patient     Patient  @relation(fields: [patient_id], references: [id], onUpdate: Restrict, map: "appointment_appointm_patient_id_893eaa7b_fk_patient_p")
+  doctors_doctor      Doctor   @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "appointment_appointment_doctor_id_5325109f_fk_doctors_doctor_id")
 
   @@index([patient_id], map: "appointment_appointm_patient_id_893eaa7b_fk_patient_p")
   @@index([doctor_id], map: "appointment_appointment_doctor_id_5325109f_fk_doctors_doctor_id")
-	@@map("appointment_appointment")
-}
-
-model appointment_procedure_appointment_procedure {
-  id                      BigInt                  @id @default(autoincrement())
-  appointmentID_id        BigInt
-  procedureID_id          BigInt
-  appointment_appointment Appointment @relation(fields: [appointmentID_id], references: [id], onUpdate: Restrict, map: "appointment_procedur_appointmentID_id_7f0d2fb5_fk_appointme")
-  procedure_procedure     Procedure     @relation(fields: [procedureID_id], references: [id], onUpdate: Restrict, map: "appointment_procedur_procedureID_id_47eb0944_fk_procedure")
-
-  @@index([appointmentID_id], map: "appointment_procedur_appointmentID_id_7f0d2fb5_fk_appointme")
-  @@index([procedureID_id], map: "appointment_procedur_procedureID_id_47eb0944_fk_procedure")
+  @@map("appointment_appointment")
 }
 
 model auth_group {
@@ -148,44 +136,33 @@ model django_session {
   @@index([expire_date], map: "django_session_expire_date_a5c62663")
 }
 
-model doctor_procedure_doctor_procedure {
-  id                  BigInt              @id @default(autoincrement())
-  doctorID_id         BigInt
-  procedureID_id      BigInt
-  doctors_doctor      Doctor      @relation(fields: [doctorID_id], references: [id], onUpdate: Restrict, map: "doctor_procedure_doc_doctorID_id_3b53fd36_fk_doctors_d")
-  procedure_procedure Procedure @relation(fields: [procedureID_id], references: [id], onUpdate: Restrict, map: "doctor_procedure_doc_procedureID_id_44bc9067_fk_procedure")
-
-  @@index([doctorID_id], map: "doctor_procedure_doc_doctorID_id_3b53fd36_fk_doctors_d")
-  @@index([procedureID_id], map: "doctor_procedure_doc_procedureID_id_44bc9067_fk_procedure")
-}
-
 model Doctor {
-  id                                BigInt                              @id @default(autoincrement())
-  first_name                        String                              @db.VarChar(30)
-  last_name                         String                              @db.VarChar(30)
-  email                             String                              @db.VarChar(254)
-  phone_number                      String                              @db.VarChar(15)
-  preferred_color                   String                              @db.VarChar(7)
-  appointment_appointment           Appointment[]
-  doctor_procedure_doctor_procedure doctor_procedure_doctor_procedure[]
-	@@map("doctors_doctor")
+  id                      BigInt        @id @default(autoincrement())
+  first_name              String        @db.VarChar(30)
+  last_name               String        @db.VarChar(30)
+  email                   String        @db.VarChar(254)
+  phone_number            String        @db.VarChar(15)
+  preferred_color         String        @db.VarChar(7)
+  appointment_appointment Appointment[]
+
+  @@map("doctors_doctor")
 }
 
 model Patient {
-  id                      BigInt                    @id @default(autoincrement())
-  first_name              String                    @db.VarChar(30)
-  last_name               String                    @db.VarChar(30)
-  phone_number            String                    @db.VarChar(15)
-  birth_date              DateTime                  @db.Date
+  id                      BigInt        @id @default(autoincrement())
+  first_name              String        @db.VarChar(30)
+  last_name               String        @db.VarChar(30)
+  phone_number            String        @db.VarChar(15)
+  birth_date              DateTime      @db.Date
   appointment_appointment Appointment[]
-	@@map("patient_patient")
+
+  @@map("patient_patient")
 }
 
 model Procedure {
-  id                                          BigInt                                        @id @default(autoincrement())
-  name                                        String                                        @db.VarChar(200)
-  price                                       Int
-  appointment_procedure_appointment_procedure appointment_procedure_appointment_procedure[]
-  doctor_procedure_doctor_procedure           doctor_procedure_doctor_procedure[]
-	@@map("procedure_procedure")
+  id    BigInt @id @default(autoincrement())
+  name  String @db.VarChar(200)
+  price Int
+
+  @@map("procedure_procedure")
 }
